@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, StyleSheet, SafeAreaView, Dimensions, TouchableOpacity } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 
 const Calendars = () => {
   const [selectedDate, setSelectedDate] = useState(getCurrentDate());
-  const [memo, setMemo] = useState('');
-  const [memos, setMemos] = useState({});
+
+  const windowHeight = Dimensions.get('window').height;
+  const dayHeight = windowHeight / 10.5;
   // const [markedDates, setMarkedDates] = useState({});
 
-  LocaleConfig.locales.fr = {
+  LocaleConfig.locales.ko = {
     monthNames: [
       '1월',
       '2월',
@@ -50,7 +51,7 @@ const Calendars = () => {
     dayNamesShort: ['일','월','화','수','목','금','토'],
     today: "Aujourd'jui",
   };
-  LocaleConfig.defaultLocale = 'fr';
+  LocaleConfig.defaultLocale = 'ko';
 
   // useEffect(() => {
   //   setMarkedDates(getMarkedDates());
@@ -65,49 +66,48 @@ const Calendars = () => {
     );
   };
 
-  // const getMarkedDates = () => {
-  //   const markedDates = {};
-  //   const today = new Date();
-  //   const currentYear = today.getFullYear();
-  //   const currentMonth = today.getMonth();
-    
-  //   for (let day = 1; day <= 31; day++) {
-  //     const date = new Date(currentYear, currentMonth, day);
-  //     if (date.getMonth() !== currentMonth) continue;
-
-  //     const dateString = date.toISOString().split('T')[0];
-  //     const dayOfWeek = date.getDay();
-
-  //     markedDates[dateString] = { marked: true };
-
-  //     if (dayOfWeek === 1) {
-  //       markedDates[dateString].dotColor = 'red';
-  //     } else if (dayOfWeek === 0) {
-  //       markedDates[dateString].dotColor = 'blue';
-  //     }
-  //   }
-  //   return markedDates;
-  // };
-
   return (
-
+    <SafeAreaView>
       <View style={styles.calenDarsWrapper}>
         <Calendar
-          onDayPress={day => {setSelectedDate(day.dateString)}}
+          style={{height: windowHeight}}
+          onDayPress={day => {setSelectedDate(day.dateString);}}
           // markedDates={markedDates}
-          theme={{
-            // calendarBackground: '#000000',
-          }}
-          
+            theme={{
+              textSectionTitleColor: '#b6c1cd',
+              todayTextColor: '#2d4150',
+              dayTextColor: '#2d4150',
+              textDisabledColor: '#d9e1e8',
+              selectedDayBackgroundColor: '#4b86b4',
+              selectedDayTextColor: '#ffffff',
+              monthTextColor: '#2d4150',
+              textMonthFontWeight: 'bold',
+              textDayFontSize: 12,
+              textMonthFontSize: 50,
+              'stylesheet.calendar.main': {
+                week: {
+                  marginTop: 5,
+                  marginBottom: 5,
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                  borderBottomWidth: 1,
+                  borderColor: '#DDDDDD',
+                },
+                dayContainer: {
+                  borderColor: '#DDDDDD',
+                  width: 40,
+                  marginBottom: dayHeight,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginHorizontal: 2,  // 수평 간격
+                  backgroundColor: '#ffffff',  // 배경색 추가
+                },
+              },
+            }}
           renderHeader={renderHeader}
         />
-        <FlatList
-          data={memos[selectedDate] || []}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => <Text style={styles.memoText}>{item}</Text>}
-        />
       </View>
-
+    </SafeAreaView>
   );
 };
 
